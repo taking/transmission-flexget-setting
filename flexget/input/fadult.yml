@@ -1,2 +1,2 @@
 inputs:
-    - rss: { url: 'https://sukebei.nyaa.si/?page=rss&q=FC2-PPV', silent: yes }
+    - rss: { url: 'https://sukebei.nyaa.si/?page=rss', silent: yes }
