@@ -3,7 +3,7 @@ variables: secrets.yml
 ######## scedules 설정 ########
 schedules:
   # Download Tasks
-  - tasks: ['*_rss', '*_discover']
+  - tasks: ['download_*']
     interval:
       hours: 2  # weeks, days, hours, minutes
   - tasks: ['move_*']
@@ -274,7 +274,6 @@ tasks:
     accept_all: yes
     move:
       to: "/{? folder.save_path ?}{? folder.kent ?}"
-      clean_source: 50
     exec:
       on_exit:
         phase: find "/{? folder.down_path ?}{? folder.downkent ?}"* -type d -empty -delete
@@ -288,9 +287,7 @@ tasks:
       regexp: '.*\.(avi|mkv|mp4)$'
     accept_all: yes
     move:
-    # ex) Kim's Convenience/Season 1/
       to: "/{? folder.save_path ?}{? folder.kdrama ?}{{tmdb_name|default(series_name)|pathscrub}}/"
-      clean_source: 51
     exec:
       on_exit:
         phase: find "/{? folder.down_path ?}{? folder.downkdrama ?}"* -type d -empty -delete
@@ -311,7 +308,6 @@ tasks:
     # ex) Kim's Convenience/Season 1/
       to: "/{? folder.save_path ?}{? folder.fseries ?}{{tvdb_series_name|default(series_name)|pathscrub}}/Season {{tvdb_season|pad(2)|default(series_season|pad(2))}}/"
       #rename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %} - {{tvdb_ep_name|pathscrub}}{% endif %}{% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      clean_source: 52
     exec:
       on_exit:
         phase: find "/{? folder.down_path ?}{? folder.downfseries ?}"* -type d -empty -delete
@@ -336,7 +332,6 @@ tasks:
       to: "/{? folder.save_path ?}{? folder.fmovies ?}{{tmdb_name|default(movie_name)|pathscrub}} ({{tmdb_year|default(movie_year)}})"
     # ex) Iron Man (2008) - [1080p bluray h264].mp4
       rename: "{{tmdb_name|default(movie_name)|pathscrub}} ({{tmdb_year|default(movie_year)}}){% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      clean_source: 53
     exec:
       on_exit:
         phase: find "/{? folder.down_path ?}{? folder.downfmovies ?}"* -type d -empty -delete
@@ -351,7 +346,6 @@ tasks:
     accept_all: yes
     move:
       to: "/{? folder.save_path ?}{? folder.fadults ?}"
-      clean_source: 50
     exec:
       on_exit:
         phase: find "/{? folder.down_path ?}{? folder.downfadults ?}"* -type d -empty -delete
