@@ -20,6 +20,10 @@
 
 
 ```c
+inputs:
+  - rss: https://eztv.ag/ezrss.xml
+  - rss: https://rarbg.to/rssdd.php?category=41
+  - rss: https://www.limetorrents.cc/rss/20/
 
 ```
 
@@ -29,6 +33,9 @@
 
 
 ```c
+series:
+  FSERIES:	# category in config.yml 
+    - 'Blindspot'
 
 ```
 
