@@ -19,7 +19,7 @@
 * input examples
 
 
-```
+```c
 
 ```
 
@@ -28,7 +28,7 @@
 * want examples
 
 
-```
+```c
 
 ```
 
