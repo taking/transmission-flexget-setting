@@ -13,6 +13,30 @@
 
 
 
+## Path
+
+- flexget → .flexget
+- transmission → .config/transmission
+
+
+
+##Edit
+
+- transmission/transmission-done.sh
+  `SERVER="9091 -n TORRENT아이디:TORRENT비밀번호"`
+
+- flexget/config.yml
+
+  ```
+  # Transmission 전송용 설정
+    anchors:
+      _transmission-settings: &transmission-settings
+        host: localhost
+        username: TORRENT아이디
+        password: TORRENT비번번호
+  ```
+
+
 
 ## Flexget
 
@@ -21,9 +45,8 @@
 
 ```c
 inputs:
-  - rss: https://eztv.ag/ezrss.xml
-  - rss: https://rarbg.to/rssdd.php?category=41
-  - rss: https://www.limetorrents.cc/rss/20/
+  - rss: { url: 'https://localhost/trss.php?k=720p-next&maxpage=1&s=tf&bf=tent', silent: yes }
+  - rss: https://localhost/trss.php?k=720p-next&maxpage=1&s=tf&bf=tdrama
 
 ```
 
@@ -34,8 +57,10 @@ inputs:
 
 ```c
 series:
-  FSERIES:	# category in config.yml 
-    - 'Blindspot'
+  KENT: # category in config.yml
+    - '미운 우리 새끼'
+    - '자기야-백년손님'
+    - '아는 형님'
 
 ```
 
@@ -44,6 +69,4 @@ series:
 
 
 
-
-
-마지막 업데이트 : 2018-04-30 (월) 
+마지막 업데이트 : 2018-11-07 (수) 

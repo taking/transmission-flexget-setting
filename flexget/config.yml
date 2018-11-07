@@ -1,29 +1,30 @@
-######## Secrets 참고 #########
+######## Init #########
 variables: secrets.yml
 ######## scedules 설정 ########
 schedules:
   # Download Tasks
-  - tasks: ['download_*']
+  - tasks: 'download_*'
     interval:
-      hours: 2  # weeks, days, hours, minutes
-  - tasks: ['move_*']
+      hours: 1  # weeks, days, hours, minutes
+  - tasks: 'move_*'
     interval:
       hours: 1
+
 ######## templates 설정 ########
 templates:
 # Transmission 전송용 설정
   anchors:
     _transmission-settings: &transmission-settings
       host: localhost
-      username: torrent아이디
-      password: torrent비밀번호
+      username: TORRENT아이디
+      password: TORRENT비밀번호
 
-# Global Settings (항상 적용 되는 세팅, 적용안하려면 template: no_global)
+# Global Settings 
   global:
     no_entries_ok: yes
     pathscrub: windows            # 파일 이름을 윈도우 형식으로 설정 (windows가 가장 엄격)
     free_space:
-      path: "/{? folder.save_path ?}"  # secrets.yml 에서 설정한 다운로드 폴더가 있는 Root 폴더
+      path: "/{? folder.root ?}"  # secrets.yml 에서 설정한 다운로드 폴더가 있는 Root 폴더
       space: 5000                 # 5G 여유공간이 있어야 다운로드 진행
 
     regexp:
@@ -86,54 +87,11 @@ templates:
     series:
       settings:
         KDRAMA:
+          #timeframe: 4 hours
           identified_by: ep
           ep_regexp: e(\d+)
-          quality: 720p 1080p !360p
-
-# Foreign Series template
-  fseries_template:
-    include: 
-      - input/fseries.yml
-      - want/fseries.yml
-    verify_ssl_certificates: no
-  # 콘텐츠 사이즈 설정
-    content_size:
-      min: 300  # 300MB 이상
-      max: 6000 # 6G 이하
-    series:
-      settings:
-        FSERIES:
-          identified_by: ep
-          quality: 1080p hdtv+ !10bit !h265
-          specials: no
-    content_filter:
-      require:  # 허용 확장자
-        - '*.mkv'
-
-# Foreign Movies template
-  fmovies_template:
-    include: 
-     - input/fmovie.yml
-     - want/fmovie.yml
-    verify_ssl_certificates: no
-  # 콘텐츠 사이즈 설정
-    content_size:
-      min: 500  # 800MB 이상
-      max: 15000 # 10G 이하
-    series:
-      settings:
-        FMOVIE:
-          quality: 1080p webdl+ !10bit !h265
-    content_filter:
-      require:  # 허용 확장자
-        - '*.mkv'
-
-# Foreign Adults template
-  fadults_template:
-    include: 
-      - input/fadult.yml
-      - want/fadult.yml
-
+          quality: 720p !1080p !360p
+          #target: 720p !1080p !360p
 
 # 저장 폴더 및 파일이름 변경 설정
   transmission-kent:
@@ -143,7 +101,7 @@ templates:
       main_file_only: yes
       rename_like_files: no
       #content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %} - {{tvdb_ep_name|pathscrub}}{% endif %}{% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      path: "/{? folder.down_path ?}{? folder.downkent ?}/"
+      path: "/{? folder.downssd ?}{? folder.downkent ?}/"
 
   transmission-kdrama:
     transmission:
@@ -152,46 +110,7 @@ templates:
       main_file_only: yes
       rename_like_files: no
       #content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %} - {{tvdb_ep_name|pathscrub}}{% endif %}{% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      path: "/{? folder.down_path ?}{? folder.downkdrama ?}{{tmdb_name|default(series_name)|pathscrub}}/"
-
-  transmission-fseries:
-    transmission:
-      <<: *transmission-settings
-      main_file_only: yes
-      include_subs: yes
-      skip_files:
-        - '*.nfo'
-        - '*.sfv'
-        - '*[sS]ample*'
-        - '*.txt'
-      rename_like_files: no
-      #content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %} - {{tvdb_ep_name|pathscrub}}{% endif %}{% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      path: "/{? folder.down_path ?}{? folder.downfseries ?}{{tvdb_series_name|default(series_name)|pathscrub}}/"
-
-  transmission-fmovies:
-    transmission:
-      <<: *transmission-settings
-      main_file_only: yes
-      include_subs: yes
-      skip_files:
-        - '*.nfo'
-        - '*.sfv'
-        - '*[sS]ample*'
-        - '*.txt'
-      rename_like_files: no
-      #content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %} - {{tvdb_ep_name|pathscrub}}{% endif %}{% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      path: "/{? folder.down_path ?}{? folder.downfmovies ?}{{movie_name|pathscrub}}/"
-
-  transmission-fadults:
-    transmission:
-      <<: *transmission-settings
-      main_file_only: yes
-      #include_subs: yes
-      skip_files:
-        - '_____.*'
-        - '____.*'
-      rename_like_files: no
-      path: "/{? folder.down_path ?}{? folder.downfadults ?}/"
+      path: "/{? folder.downssd ?}{? folder.downkdrama ?}{{tmdb_name|default(series_name)|pathscrub}}/"
 
 # Pushbullet 설정
   pushbullet:
@@ -213,139 +132,65 @@ templates:
     #tmdb_lookup: yes
     thetvdb_lookup: yes
 
+  kdrama-metainfo:
+    metainfo_series: yes
+    tmdb_lookup: yes
+    thetvdb_lookup: yes    
+
   series-guessit:
     parsing:
       series: guessit
 
-  movies-metainfo:
-    metainfo_movie: yes
-    tmdb_lookup: yes
-    parsing:
-      movie: guessit
 ################################
 
 tasks:
-  download_kent_rss:
+  download_kent_manual:
     priority: 10
     template:
       - disable-seen-retry
       - kent_template
       - transmission-kent
-      - pushbullet
+        #- pushbullet
 
-  download_kdrama_rss:
+  download_kdrama_manual:
     priority: 10
     template:
       - disable-seen-retry
       - kdrama_template
       - transmission-kdrama
-
-  download_fseries_rss:
-    priority: 10
-    template:
-      - disable-seen-retry
-      - fseries_template
-      - transmission-fseries
-
-  download_fseries_rss:
-    priority: 10
-    template:
-      - disable-seen-retry
-      - fmovies_template
-      - transmission-fmovies
-
-  download_fadults_rss:
-    priority: 10
-    template:
-      - disable-seen-retry
-      - fadults_template
-      - transmission-fadults
+        #- pushbullet
 
 
-
-############ 이동 ############
+############ 이동 #######
   move_kent:
     priority: 50
     filesystem:
-      path: "/{? folder.down_path ?}{? folder.downkent ?}"
+      path: "/{? folder.downssd ?}{? folder.downkent ?}"
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
     accept_all: yes
     move:
-      to: "/{? folder.save_path ?}{? folder.kent ?}"
+      to: "/{? folder.root ?}{? folder.kent ?}"
     exec:
       on_exit:
-        phase: find "/{? folder.down_path ?}{? folder.downkent ?}"* -type d -empty -delete
+        phase: find "/{? folder.downssd ?}{? folder.downkent ?}"* -type d -empty -delete
 
   move_kdrama:
     priority: 51
-    filesystem:
-      path: "/{? folder.down_path ?}{? folder.downkdrama ?}"
-      recursive: yes
-      retrieve: files
-      regexp: '.*\.(avi|mkv|mp4)$'
-    accept_all: yes
-    move:
-      to: "/{? folder.save_path ?}{? folder.kdrama ?}{{tmdb_name|default(series_name)|pathscrub}}/"
-    exec:
-      on_exit:
-        phase: find "/{? folder.down_path ?}{? folder.downkdrama ?}"* -type d -empty -delete
-
-  move_fseries:
-    priority: 52
     template:
       - disable-seen-retry
       - series-metainfo
       - series-guessit
     filesystem:
-      path: "/{? folder.down_path ?}{? folder.downfseries ?}"
+      path: "/{? folder.downssd ?}{? folder.downkdrama ?}"
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
     accept_all: yes
     move:
     # ex) Kim's Convenience/Season 1/
-      to: "/{? folder.save_path ?}{? folder.fseries ?}{{tvdb_series_name|default(series_name)|pathscrub}}/Season {{tvdb_season|pad(2)|default(series_season|pad(2))}}/"
-      #rename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %} - {{tvdb_ep_name|pathscrub}}{% endif %}{% if quality|default(False) %} - [{{quality}}]{% endif %}"
+      to: "/{? folder.root ?}{? folder.kdrama ?}"
     exec:
       on_exit:
-        phase: find "/{? folder.down_path ?}{? folder.downfseries ?}"* -type d -empty -delete
-
-  move_fmovies:
-    priority: 53
-    template:
-      - disable-seen-retry
-      - movies-metainfo
-    filesystem:
-      path: "/{? folder.down_path ?}{? folder.downfmovies ?}"
-      recursive: yes
-      retrieve: files
-      regexp: '.*\.(avi|mkv|mp4)$'
-    accept_all: yes
-    regexp:
-      reject:
-        - \btrailer\b
-        - \bsample\b
-    move:
-    # ex) Iron Man (2008)
-      to: "/{? folder.save_path ?}{? folder.fmovies ?}{{tmdb_name|default(movie_name)|pathscrub}} ({{tmdb_year|default(movie_year)}})"
-    # ex) Iron Man (2008) - [1080p bluray h264].mp4
-      rename: "{{tmdb_name|default(movie_name)|pathscrub}} ({{tmdb_year|default(movie_year)}}){% if quality|default(False) %} - [{{quality}}]{% endif %}"
-    exec:
-      on_exit:
-        phase: find "/{? folder.down_path ?}{? folder.downfmovies ?}"* -type d -empty -delete
-
-  move_fadults:
-    priority: 50
-    filesystem:
-      path: "/{? folder.down_path ?}{? folder.downfadults ?}"
-      recursive: yes
-      retrieve: files
-      regexp: '.*\.(avi|mkv|mp4)$'
-    accept_all: yes
-    move:
-      to: "/{? folder.save_path ?}{? folder.fadults ?}"
-    exec:
-      on_exit:
-        phase: find "/{? folder.down_path ?}{? folder.downfadults ?}"* -type d -empty -delete
+        phase: find "/{? folder.downssd ?}{? folder.downkdrama ?}"* -type d -empty -delete

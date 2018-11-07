@@ -12,4 +12,3 @@ do
     fi
 #flexget execute --tasks sort
 done
-find /4TB/AutoDownload/Ent/ -name '*' -mtime +29 -delete

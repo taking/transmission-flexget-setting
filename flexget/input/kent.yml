@@ -1,2 +1,2 @@
 inputs:
-  - rss: RSS주소
+  - rss: { url: 'https://localhost/trss.php?k=720p-next&maxpage=1&s=tf&bf=tent', silent: yes }
