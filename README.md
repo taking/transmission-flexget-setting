@@ -6,6 +6,15 @@
 
 
 
+## CentOS 7 Install Shell Script
+
+- [**Centos 7 Transmission Install&Script settings Script.sh**](https://gist.github.com/taking/ec67c447d8e16522ff925bf094f24394)
+
+> 기타 - CentOS 7 처음부터 설치한다면, 해당 스크립트 수정해서 사용하기 (옵션)
+>
+> 아닐 경우, PASS
+
+
 
 ## Transmission
 
