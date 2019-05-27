@@ -72,7 +72,10 @@ templates:
         KENT:
           identified_by: ep
           ep_regexp: e(\d+)
-          quality: 720p !1080p !360p
+          target: 720p # Target 은 720P
+          quality: 720p-1080p !360p # Target 중 720P 가 없고 1080P를 찾을 시 1080P 다운, 360P는 예외 대상
+          #from_group:
+          #  - NEXT
 
 # Korea Drama template
   kdrama_template:
@@ -90,8 +93,10 @@ templates:
           #timeframe: 4 hours
           identified_by: ep
           ep_regexp: e(\d+)
-          quality: 720p !1080p !360p
-          #target: 720p !1080p !360p
+          target: 720p # Target 은 720P
+          quality: 720p-1080p !360p # Target 중 720P 가 없고 1080P를 찾을 시 1080P 다운, 360P는 예외 대상
+          #from_group:
+          #  - NEXT
 
 # 저장 폴더 및 파일이름 변경 설정
   transmission-kent:
